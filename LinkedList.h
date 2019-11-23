@@ -18,6 +18,12 @@ namespace Abuelfateh {
 		void insertAfter(const T &data);
 		// insert new node before the current cursor
 		void insertBefore(const T &data);
+		// insert new node in ordered form, to be used with integer or char T types
+		// or we can ad new typename to the template as a key, and use it to order
+		// the list.
+		void insertOrdered(const T &data);
+		// Short hand to insert after the current position, as it will be the most used case
+		void insert(const T &data);
 		// check if the list is empty return true
 		bool isEmpty();
 		// clear the list, make it empty

@@ -9,29 +9,35 @@ using namespace Abuelfateh;
 int main() {
 	LinkedList<int> list;
 
-	list.insertStart(100);
-	list.insertEnd(101);
-	list.insertEnd(102);
-	list.insertEnd(103);
+	list.insert(100);
+	list.insertEnd(111);
+	list.insertStart(222);
+	list.insert(333);
+	list.insertEnd(555);
 	
 
-	int i = 0;
-	for (list.toStart(); list.hasData(); list.advance(), i++) {
-		//cout << list.getData() << endl;
-		if (i == 1) {
-			//list.remove();
-			list.insertAfter(111);
-			//list.goBack();
-		}
-		else if (i == 3) {
-			list.insertBefore(222);
-			//list.goBack();
-		}
-	}
+	list.insertOrdered(104);
+	list.insertOrdered(221);
+	list.insertOrdered(343);
+
+	//int i = 0;
+	//for (list.toStart(); list.hasData(); list.advance(), i++) {
+	//	//cout << list.getData() << endl;
+	//	if (i == 1) {
+	//		//list.remove();
+	//		list.insertAfter(111);
+	//		//list.goBack();
+	//	}
+	//	else if (i == 3) {
+	//		list.insertBefore(222);
+	//		//list.goBack();
+	//	}
+	//}
 
 	cout << "----------------------------------------\n";
-	for (list.toStart(); list.hasData(); list.advance()) {
-		cout << list.getData() << endl;
+	int i = 0;
+	for (list.toStart(); list.hasData(); list.advance(), i++) {
+		cout << i << " " << list.getData() << endl;
 	}
 
 

@@ -128,7 +128,6 @@ LinkedList<T>::Node * LinkedList<T>::_createNode(const T &data) {
 	}
 	tmp->data = data;
 	tmp->next = NULL;
-
 	return tmp;
 }
 
@@ -151,7 +150,7 @@ void LinkedList<T>::insertStart(const T &data) {
 			tmp->next = head;
 			head = tmp;
 			prev = NULL;
-			cur = tmp;
+			cur = head;
 		}
 
 		length++;
@@ -185,13 +184,21 @@ void LinkedList<T>::insertAfter(const T &data) {
 		}
 		else {
 			// special case for cursor at the end of list
-			if (cur == NULL)
-				cur = tail;
-
-			tmp->next = cur->next;
-			cur->next = tmp;
-			prev = cur;
-			cur = tmp;
+			if (cur == NULL) {
+				tail->next = tmp;
+				prev = tail;
+				cur = tmp;
+				tail = tmp;
+			}
+			else {
+				prev = cur;
+				tmp->next = cur->next;
+				cur->next = tmp;
+				cur = tmp;
+				// keep track of the list tail
+				if (cur->next == NULL)
+					tail = cur;
+			}
 		}
 
 		length++;
@@ -200,16 +207,18 @@ void LinkedList<T>::insertAfter(const T &data) {
 
 template <typename T>
 void LinkedList<T>::insertBefore(const T &data) {
+	// special case for cursor at the start of the list
+	if (prev == NULL && head != NULL) {
+		insertStart(data);
+		return;
+	}
+
 	Node *tmp = _createNode(data);
 	if (tmp != NULL) {
 		if (head == NULL) {
 			_insertFirstNode(tmp);
 		}
 		else {
-			// special case for cursor at the start of the list
-			if (prev == NULL)
-				prev = head;
-			
 			tmp->next = cur;
 			prev->next = tmp;
 			cur = tmp;
@@ -217,5 +226,35 @@ void LinkedList<T>::insertBefore(const T &data) {
 
 		length++;
 	}
+}
+
+template <typename T>
+void LinkedList<T>::insertOrdered(const T &data) {
+	Node *tmp = _createNode(data);
+	if (tmp != NULL) {
+		if (head == NULL) {
+			_insertFirstNode(tmp);
+		}
+		else {
+
+			// set the cursor on the first greater element in the list
+			for (toStart(); hasData() && (cur->data < data); advance());
+
+			// Another way to do the loop using while
+			//toStart();
+			//while ((hasData() && (cur->data < data)))
+			//	advance();
+
+			// insert before the greater element
+			insertBefore(data);
+		}
+
+		length++;
+	}
+}
+
+template <typename T>
+void LinkedList<T>::insert(const T &data) {
+	insertAfter(data);
 }
 
