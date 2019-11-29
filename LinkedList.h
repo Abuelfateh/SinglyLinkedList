@@ -2,6 +2,12 @@
 #define A_LINKEDLIST_H
 #include <iostream>
 
+#define LL_START    0x00
+#define LL_END	    0x01
+#define LL_AFTER	  0x02
+#define LL_BEFORE	  0x03
+#define LL_ORDERED  0x04
+
 namespace Abuelfateh {
 
 	template <typename T, typename K>
@@ -46,6 +52,10 @@ namespace Abuelfateh {
 		int getLength() const;
 		// Update current data
 		void update(const T &data);
+		// Copy current data in another LinkedList
+		void copy(LinkedList<T, K> &list, int fn = LL_ORDERED, K key = NULL);
+		// Move current data in another LinkedList
+		void move(LinkedList<T, K> &list, int fn = LL_ORDERED, K key = NULL);
 	private:
 		struct Node {
 			K key;

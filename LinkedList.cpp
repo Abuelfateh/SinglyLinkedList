@@ -271,3 +271,36 @@ void LinkedList<T, K>::insert(const T &data) {
 	insertAfter(data);
 }
 
+
+template <typename T, typename K>
+void LinkedList<T, K>::copy(LinkedList<T, K> &list, int fn, K key) {
+	if (cur != NULL) {
+		switch (fn) {
+			case LL_START:
+				list->insertStart(cur->data, NULL);
+				break;
+			case LL_END:
+				list->insertEnd(cur->data);
+				break;
+			case LL_AFTER:
+				list->insertAfter(cur->data);
+				break;
+			case LL_BEFORE:
+				list->insertBefore(cur->data, NULL);
+				break;
+			case LL_ORDERED:
+				list->insertOrdered(cur->data, key);
+				break;
+		}
+	}
+}
+
+template <typename T, typename K>
+void LinkedList<T, K>::move(LinkedList<T, K> &list, int fn, K key) {
+	if (cur != NULL) {
+		// first we copy current node data to the new list
+		copy(list, fn, key);
+		// then, delete current node, as it was copied to the new list
+		remove();
+	}
+}
