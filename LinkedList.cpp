@@ -3,8 +3,8 @@
 using namespace Abuelfateh;
 using namespace std;
 
-template <typename T>
-void LinkedList<T>::_init() {
+template <typename T, typename K>
+void LinkedList<T, K>::_init() {
 	head = NULL;
 	tail = NULL;
 	cur = NULL;
@@ -12,34 +12,34 @@ void LinkedList<T>::_init() {
 	length = 0;
 }
 
-template <typename T>
-LinkedList<T>::LinkedList() {
+template <typename T, typename K>
+LinkedList<T, K>::LinkedList() {
 	_init();
 }
 
-template <typename T>
-LinkedList<T>::~LinkedList() {
+template <typename T, typename K>
+LinkedList<T, K>::~LinkedList() {
 	clear();
 }
 
-template <typename T>
-int LinkedList<T>::getLength() const {
+template <typename T, typename K>
+int LinkedList<T, K>::getLength() const {
 	return length;
 }
 
-template <typename T>
-bool LinkedList<T>::isEmpty() {
+template <typename T, typename K>
+bool LinkedList<T, K>::isEmpty() {
 	return head == NULL;
 }
 
-template <typename T>
-void LinkedList<T>::toStart() {
+template <typename T, typename K>
+void LinkedList<T, K>::toStart() {
 	cur = head;
 	prev = NULL;
 }
 
-template <typename T>
-void LinkedList<T>::advance() {
+template <typename T, typename K>
+void LinkedList<T, K>::advance() {
 	// check if the cursor is at the end of the list
 	if (cur != NULL) {
 		prev = cur;
@@ -47,8 +47,8 @@ void LinkedList<T>::advance() {
 	}
 }
 
-template <typename T>
-void LinkedList<T>::goBack() {
+template <typename T, typename K>
+void LinkedList<T, K>::goBack() {
 	cur = head;
 	// special case for 1 element in the list, so we set the cursor to the head
 	if (prev == NULL)
@@ -70,25 +70,25 @@ void LinkedList<T>::goBack() {
 	}
 }
 
-template <typename T>
-bool LinkedList<T>::hasNext() {
+template <typename T, typename K>
+bool LinkedList<T, K>::hasNext() {
 	// check first for cursor at the end, to avoid calling next on a null pointer
 	return (cur != NULL && cur->next != NULL);
 }
 
-template <typename T>
-bool LinkedList<T>::hasData() {
+template <typename T, typename K>
+bool LinkedList<T, K>::hasData() {
 	return cur != NULL;
 }
 
-template <typename T>
-T LinkedList<T>::getData() {
-	// make sure not to call data member on a null pointer
-	return cur != NULL ? cur->data : NULL;
+template <typename T, typename K>
+T * LinkedList<T, K>::getData() const {
+	// make sure always get data, even if the cursor at the end of the list
+	return cur == NULL ? &tail->data : &cur->data;
 }
 
-template <typename T>
-void LinkedList<T>::clear() {
+template <typename T, typename K>
+void LinkedList<T, K>::clear() {
 	while ((head != NULL)) {
 		cur = head->next;
 		delete head;
@@ -97,8 +97,8 @@ void LinkedList<T>::clear() {
 	_init();
 }
 
-template <typename T>
-void LinkedList<T>::remove() {
+template <typename T, typename K>
+void LinkedList<T, K>::remove() {
 	// make sure the cursor points to an element and not at the end of the list
 	if (cur != NULL) {
 		// special case for cursor points to the head, so we asume that (cur = head);
@@ -115,34 +115,45 @@ void LinkedList<T>::remove() {
 	}
 }
 
+template <typename T, typename K>
+void LinkedList<T, K>::update(const T &data) {
+	if (cur != NULL)
+		cur->data = data;
+	// Update the tail if the cursor points to the end of the list
+	else if (head != NULL)
+		tail->data = data;
+}
+
 // here we must add an extra keyword (typename) before the return type,
 // and also we have to add the class name and the scope operator before the return type,
 // all that to be able to use the inner struct Node in the template class as a return type,
-template <typename T> typename
-LinkedList<T>::Node * LinkedList<T>::_createNode(const T &data) {
+template <typename T, typename K> typename
+LinkedList<T, K>::Node * LinkedList<T, K>::_createNode(const T &data) {
 	// here we use nothrow to be able to handle no enough memory error by our self
 	Node *tmp = new(nothrow) Node;
 	if (!tmp) {
 		cout << "\nFailed to insert new Node, no enough memory to be allocated.\n";
 		return NULL;
 	}
+	tmp->key = NULL;
 	tmp->data = data;
 	tmp->next = NULL;
 	return tmp;
 }
 
-template <typename T>
-void LinkedList<T>::_insertFirstNode(Node *n) {
+template <typename T, typename K>
+void LinkedList<T, K>::_insertFirstNode(Node *n) {
 	head = n;
 	tail = n;
 	cur = n;
 	prev = NULL;
 }
 
-template <typename T>
-void LinkedList<T>::insertStart(const T &data) {
+template <typename T, typename K>
+void LinkedList<T, K>::insertStart(const T &data, K key) {
 	Node *tmp = _createNode(data);
 	if (tmp != NULL) {
+		tmp->key = key;
 		if (head == NULL) {
 			_insertFirstNode(tmp);
 		}
@@ -157,8 +168,8 @@ void LinkedList<T>::insertStart(const T &data) {
 	}
 }
 
-template <typename T>
-void LinkedList<T>::insertEnd(const T &data) {
+template <typename T, typename K>
+void LinkedList<T, K>::insertEnd(const T &data) {
 	Node *tmp = _createNode(data);
 	if (tmp != NULL) {
 		if (head == NULL) {
@@ -175,8 +186,8 @@ void LinkedList<T>::insertEnd(const T &data) {
 	}
 }
 
-template <typename T>
-void LinkedList<T>::insertAfter(const T &data) {
+template <typename T, typename K>
+void LinkedList<T, K>::insertAfter(const T &data) {
 	Node *tmp = _createNode(data);
 	if (tmp != NULL) {
 		if (head == NULL) {
@@ -205,16 +216,17 @@ void LinkedList<T>::insertAfter(const T &data) {
 	}
 }
 
-template <typename T>
-void LinkedList<T>::insertBefore(const T &data) {
+template <typename T, typename K>
+void LinkedList<T, K>::insertBefore(const T &data, K key) {
 	// special case for cursor at the start of the list
 	if (prev == NULL && head != NULL) {
-		insertStart(data);
+		insertStart(data, key);
 		return;
 	}
 
 	Node *tmp = _createNode(data);
 	if (tmp != NULL) {
+		tmp->key = key;
 		if (head == NULL) {
 			_insertFirstNode(tmp);
 		}
@@ -228,17 +240,18 @@ void LinkedList<T>::insertBefore(const T &data) {
 	}
 }
 
-template <typename T>
-void LinkedList<T>::insertOrdered(const T &data) {
+template <typename T, typename K>
+void LinkedList<T, K>::insertOrdered(const T &data, const K key) {
 	Node *tmp = _createNode(data);
 	if (tmp != NULL) {
+		tmp->key = key;
 		if (head == NULL) {
 			_insertFirstNode(tmp);
 		}
 		else {
 
 			// set the cursor on the first greater element in the list
-			for (toStart(); hasData() && (cur->data < data); advance());
+			for (toStart(); hasData() && (cur->key < key); advance());
 
 			// Another way to do the loop using while
 			//toStart();
@@ -246,15 +259,15 @@ void LinkedList<T>::insertOrdered(const T &data) {
 			//	advance();
 
 			// insert before the greater element
-			insertBefore(data);
+			insertBefore(data, key);
 		}
 
 		length++;
 	}
 }
 
-template <typename T>
-void LinkedList<T>::insert(const T &data) {
+template <typename T, typename K>
+void LinkedList<T, K>::insert(const T &data) {
 	insertAfter(data);
 }
 

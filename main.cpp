@@ -1,43 +1,48 @@
 #include "LinkedList.h"
 // include the template class implementation here to avoid link errors
 #include "LinkedList.cpp"
+#include <string>
 
 
 using namespace std;
 using namespace Abuelfateh;
 
+struct Student {
+	int id;
+	string name;
+};
+
 int main() {
-	LinkedList<int> list;
+	LinkedList<Student, int> list;
 
-	list.insert(100);
-	list.insertEnd(111);
-	list.insertStart(222);
-	list.insert(333);
-	list.insertEnd(555);
-	
+	Student * stArray, *student;
+	int i, size;
 
-	list.insertOrdered(104);
-	list.insertOrdered(221);
-	list.insertOrdered(343);
+	cout << "Please enter the number of students to be added to the list: ";
+	cin >> size;
 
-	//int i = 0;
-	//for (list.toStart(); list.hasData(); list.advance(), i++) {
-	//	//cout << list.getData() << endl;
-	//	if (i == 1) {
-	//		//list.remove();
-	//		list.insertAfter(111);
-	//		//list.goBack();
-	//	}
-	//	else if (i == 3) {
-	//		list.insertBefore(222);
-	//		//list.goBack();
-	//	}
-	//}
+	stArray = new Student[size];
 
-	cout << "----------------------------------------\n";
-	int i = 0;
-	for (list.toStart(); list.hasData(); list.advance(), i++) {
-		cout << i << " " << list.getData() << endl;
+	for (i = 0; i < size; i++) {
+		cout << "Enter student id: ";
+		cin >> stArray[i].id;
+		cout << "Enter student name: ";
+		cin >> stArray[i].name;
+
+		cout << endl;
+		// consider student id as the key
+		list.insertOrdered(stArray[i], stArray[i].id);
+	}
+
+	// Clean the student array, as it now saved in the list
+	delete[] stArray;
+
+	cout << "---------------------------------------------\n"
+		<< "ID\tName\n"
+		<< "---------------------------------------------\n";
+	for (list.toStart(); list.hasData(); list.advance()) {
+		student = list.getData();
+		cout << student->id << "\t" << student->name << endl;
 	}
 
 
