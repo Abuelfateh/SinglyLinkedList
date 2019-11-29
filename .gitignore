@@ -88,6 +88,11 @@ ipch/
 *.vspx
 *.sap
 
+# Visual Studio project and solution
+*.vcxproj
+*.vcxproj.filters
+*.sln
+
 # TFS 2012 Local Workspace
 $tf/
 
