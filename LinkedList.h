@@ -2,11 +2,13 @@
 #define A_LINKEDLIST_H
 #include <iostream>
 
-#define LL_START    0x00
-#define LL_END	    0x01
-#define LL_AFTER	  0x02
-#define LL_BEFORE	  0x03
-#define LL_ORDERED  0x04
+// constants to select the required function in copy|move
+// don't assign 0x00 to enable NULL evaluation in insert ordered
+#define LL_START    0x01
+#define LL_END	    0x02
+#define LL_AFTER	  0x04
+#define LL_BEFORE	  0x08
+#define LL_ORDERED  0x10
 
 namespace Abuelfateh {
 

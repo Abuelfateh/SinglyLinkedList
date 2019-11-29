@@ -277,19 +277,20 @@ void LinkedList<T, K>::copy(LinkedList<T, K> &list, int fn, K key) {
 	if (cur != NULL) {
 		switch (fn) {
 			case LL_START:
-				list->insertStart(cur->data, NULL);
+				list.insertStart(cur->data, NULL);
 				break;
 			case LL_END:
-				list->insertEnd(cur->data);
+				list.insertEnd(cur->data);
 				break;
 			case LL_AFTER:
-				list->insertAfter(cur->data);
+				list.insertAfter(cur->data);
 				break;
 			case LL_BEFORE:
-				list->insertBefore(cur->data, NULL);
+				list.insertBefore(cur->data, NULL);
 				break;
 			case LL_ORDERED:
-				list->insertOrdered(cur->data, key);
+				// make sure to use the current key if user pass NULL to key argument
+				list.insertOrdered(cur->data, key == NULL ? cur->key : key);
 				break;
 		}
 	}
