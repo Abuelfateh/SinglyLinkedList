@@ -8,6 +8,9 @@
 #define LL_AFTER	  0x04
 #define LL_BEFORE	  0x08
 #define LL_ORDERED  0x10
+// to be used with insertOrdered
+#define LL_ASC			0x11
+#define LL_DESC			0x12
 
 namespace Abuelfateh {
 
@@ -28,7 +31,8 @@ namespace Abuelfateh {
 		// key argument is defined to be used internaly by insertOrdered
 		void insertBefore(const T &data, K key = NULL);
 		// insert new node in ordered form
-		void insertOrdered(const T &data, const K key);
+		// generally in ascending order, or LL_DESC to insert in descending order (useful for Stack implementation)
+		void insertOrdered(const T &data, const K key, int order = LL_ASC);
 		// Short hand to insert after the current position, as it will be the most used case
 		void insert(const T &data);
 		// check if the list is empty return true
@@ -47,16 +51,20 @@ namespace Abuelfateh {
 		bool hasNext();
 		// check if there is data in the current element
 		bool hasData();
+		// move the cursor to specific key
+		void toKey(K key);
 		// get the data in the current cursor position
 		T * getData() const;
+		// return current key value
+		K getKey() const;
 		// get the length of the list
 		int getLength() const;
 		// Update current data
 		void update(const T &data);
 		// Copy current data in another LinkedList
-		void copy(LinkedList<T, K> &list, int fn = LL_ORDERED, K key = NULL);
+		void copy(LinkedList<T, K> &list, K key, int fn = LL_ORDERED, int order = LL_ASC);
 		// Move current data in another LinkedList
-		void move(LinkedList<T, K> &list, int fn = LL_ORDERED, K key = NULL);
+		void move(LinkedList<T, K> &list, K key, int fn = LL_ORDERED, int order = LL_ASC);
 	private:
 		struct Node {
 			K key;

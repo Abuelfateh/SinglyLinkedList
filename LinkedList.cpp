@@ -48,6 +48,15 @@ void LinkedList<T, K>::advance() {
 }
 
 template <typename T, typename K>
+void LinkedList<T, K>::toKey(K key) {
+	if (key != NULL) {
+		toStart();
+		while (cur != NULL && cur->key != key)
+			advance();
+	}
+}
+
+template <typename T, typename K>
 void LinkedList<T, K>::goBack() {
 	cur = head;
 	// special case for 1 element in the list, so we set the cursor to the head
@@ -88,6 +97,11 @@ T * LinkedList<T, K>::getData() const {
 }
 
 template <typename T, typename K>
+K LinkedList<T, K>::getKey() const {
+	return cur == NULL ? tail->key : cur->key;
+}
+
+template <typename T, typename K>
 void LinkedList<T, K>::clear() {
 	while ((head != NULL)) {
 		cur = head->next;
@@ -112,6 +126,7 @@ void LinkedList<T, K>::remove() {
 			delete prev->next;
 			prev->next = cur;
 		}
+		length--;
 	}
 }
 
@@ -138,6 +153,7 @@ LinkedList<T, K>::Node * LinkedList<T, K>::_createNode(const T &data) {
 	tmp->key = NULL;
 	tmp->data = data;
 	tmp->next = NULL;
+	length++;
 	return tmp;
 }
 
@@ -163,8 +179,6 @@ void LinkedList<T, K>::insertStart(const T &data, K key) {
 			prev = NULL;
 			cur = head;
 		}
-
-		length++;
 	}
 }
 
@@ -181,8 +195,6 @@ void LinkedList<T, K>::insertEnd(const T &data) {
 			tail = tmp;
 			cur = tmp;
 		}
-
-		length++;
 	}
 }
 
@@ -211,8 +223,6 @@ void LinkedList<T, K>::insertAfter(const T &data) {
 					tail = cur;
 			}
 		}
-
-		length++;
 	}
 }
 
@@ -235,34 +245,31 @@ void LinkedList<T, K>::insertBefore(const T &data, K key) {
 			prev->next = tmp;
 			cur = tmp;
 		}
-
-		length++;
 	}
 }
 
 template <typename T, typename K>
-void LinkedList<T, K>::insertOrdered(const T &data, const K key) {
-	Node *tmp = _createNode(data);
-	if (tmp != NULL) {
-		tmp->key = key;
-		if (head == NULL) {
+void LinkedList<T, K>::insertOrdered(const T &data, const K key, int order) {
+	// don't create a new node unless it is the first node,
+	// as we will let this on insertBefore
+	if (head == NULL) {
+		Node *tmp = _createNode(data);
+		if (tmp != NULL) {
+			tmp->key = key;
 			_insertFirstNode(tmp);
 		}
-		else {
+	}
+	else {
+		// set the cursor on the first greater element in the list
+		for (toStart(); hasData() && (order == LL_ASC ? (cur->key < key) : (cur->key > key)); advance());
 
-			// set the cursor on the first greater element in the list
-			for (toStart(); hasData() && (cur->key < key); advance());
+		// Another way to do the loop using while
+		//toStart();
+		//while ((hasData() && (cur->data < data)))
+		//	advance();
 
-			// Another way to do the loop using while
-			//toStart();
-			//while ((hasData() && (cur->data < data)))
-			//	advance();
-
-			// insert before the greater element
-			insertBefore(data, key);
-		}
-
-		length++;
+		// insert before the greater element
+		insertBefore(data, key);
 	}
 }
 
@@ -273,7 +280,7 @@ void LinkedList<T, K>::insert(const T &data) {
 
 
 template <typename T, typename K>
-void LinkedList<T, K>::copy(LinkedList<T, K> &list, int fn, K key) {
+void LinkedList<T, K>::copy(LinkedList<T, K> &list, K key, int fn, int order) {
 	if (cur != NULL) {
 		switch (fn) {
 			case LL_START:
@@ -289,18 +296,19 @@ void LinkedList<T, K>::copy(LinkedList<T, K> &list, int fn, K key) {
 				list.insertBefore(cur->data, NULL);
 				break;
 			case LL_ORDERED:
-				// make sure to use the current key if user pass NULL to key argument
-				list.insertOrdered(cur->data, key == NULL ? cur->key : key);
+				list.insertOrdered(cur->data, key == NULL ? cur->key : key, order);
 				break;
 		}
+		list.toKey(key);
 	}
 }
 
 template <typename T, typename K>
-void LinkedList<T, K>::move(LinkedList<T, K> &list, int fn, K key) {
+void LinkedList<T, K>::move(LinkedList<T, K> &list, K key, int fn, int order) {
+	toKey(key);
 	if (cur != NULL) {
 		// first we copy current node data to the new list
-		copy(list, fn, key);
+		copy(list, key, fn, order);
 		// then, delete current node, as it was copied to the new list
 		remove();
 	}
