@@ -278,6 +278,44 @@ void LinkedList<T, K>::insert(const T &data) {
 	insertAfter(data);
 }
 
+template <typename T, typename K>
+void LinkedList<T, K>::reverse() {
+	Node *tmp;
+	// swap the head and the tail
+	if (length == 2) {
+		tmp = head;
+		head = tail;
+		tail = tmp;
+		head->next = tail;
+		tail->next = NULL;
+		// set the cursor to the first node
+		prev = NULL;
+		cur = head;
+	}
+	else if (length > 2) {
+		// move the cursor to the start
+		toStart();
+		// set the cursor to the second node in the list
+		advance();
+		// this condition will pass if there is more than two nodes in the list
+		// so, this loop will run at least twice if there is three nodes in the list
+		do {
+			// catch the next node after the current position
+			tmp = cur->next;
+			// reverse the pointer to the previous node
+			cur->next = prev;
+			// handle control variables to the next itteration
+			prev = cur;
+			cur = tmp;
+		} while (cur != NULL);
+
+		// reverse the head and tail pointers
+		tmp = head;
+		head = tail;
+		tail = tmp;
+		tail->next = NULL;
+	}
+}
 
 template <typename T, typename K>
 void LinkedList<T, K>::copy(LinkedList<T, K> &list, K key, int fn, int order) {
@@ -296,7 +334,7 @@ void LinkedList<T, K>::copy(LinkedList<T, K> &list, K key, int fn, int order) {
 				list.insertBefore(cur->data, NULL);
 				break;
 			case LL_ORDERED:
-				list.insertOrdered(cur->data, key == NULL ? cur->key : key, order);
+				list.insertOrdered(cur->data, key, order);
 				break;
 		}
 		list.toKey(key);

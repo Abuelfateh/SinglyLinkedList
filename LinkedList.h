@@ -51,16 +51,18 @@ namespace Abuelfateh {
 		bool hasNext();
 		// check if there is data in the current element
 		bool hasData();
-		// move the cursor to specific key
+		// move the cursur to specific key of to the end of the list => (cur = NULL)
 		void toKey(K key);
 		// get the data in the current cursor position
 		T * getData() const;
-		// return current key value
+		// return the current key value
 		K getKey() const;
 		// get the length of the list
 		int getLength() const;
 		// Update current data
 		void update(const T &data);
+		// Reverse the list values
+		void reverse();
 		// Copy current data in another LinkedList
 		void copy(LinkedList<T, K> &list, K key, int fn = LL_ORDERED, int order = LL_ASC);
 		// Move current data in another LinkedList
