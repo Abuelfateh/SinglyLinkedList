@@ -4,14 +4,14 @@
 
 namespace Abuelfateh {
 
-	// to select the required function in copy|move
-	// to be used with insertOrdered
 	typedef enum linkedListByte {
+		// to select the required function in copy|move
 		START			= 0x00,
 		END				= 0x01,
 		AFTER			= 0x02,
 		BEFORE		= 0x03,
 		ORDERED		= 0x04,
+		// to be used with insertOrdered
 		ASC				= 0x05,
 		DESC			= 0x06
 	} LLByte;
@@ -19,7 +19,7 @@ namespace Abuelfateh {
 	template <typename T, typename K>
 	class LinkedList {
 	public:
-		LinkedList();
+		LinkedList(LLByte defInsert = ORDERED);
 		~LinkedList();
 
 		// insert new node at the start of the list,
@@ -35,8 +35,8 @@ namespace Abuelfateh {
 		// insert new node in ordered form
 		// generally in ascending order, or LL_DESC to insert in descending order (useful for Stack implementation)
 		void insertOrdered(const T &data, const K key, LLByte order = ASC);
-		// Short hand to insert after the current position, as it will be the most used case
-		void insert(const T &data);
+		// Short hand to insert using the default insert method
+		void insert(const T &data, K key = NULL, LLByte order = ASC);
 		// check if the list is empty return true
 		bool isEmpty();
 		// clear the list, make it empty
@@ -76,7 +76,8 @@ namespace Abuelfateh {
 			Node *next;
 		} *head, *tail, *cur, *prev;
 		int length;
-
+		// set the default insert function
+		LLByte defInsert;
 		// private method to reset all control variables
 		void _init();
 		// create new node, here we separate the creation of the new node to be able to

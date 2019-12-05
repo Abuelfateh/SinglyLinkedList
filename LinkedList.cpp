@@ -13,8 +13,9 @@ void LinkedList<T, K>::_init() {
 }
 
 template <typename T, typename K>
-LinkedList<T, K>::LinkedList() {
+LinkedList<T, K>::LinkedList(LLByte defIns) {
 	_init();
+	defInsert = defIns;
 }
 
 template <typename T, typename K>
@@ -274,8 +275,25 @@ void LinkedList<T, K>::insertOrdered(const T &data, const K key, LLByte order) {
 }
 
 template <typename T, typename K>
-void LinkedList<T, K>::insert(const T &data) {
-	insertAfter(data);
+void LinkedList<T, K>::insert(const T &data, K key, LLByte order) {
+	switch (defInsert) {
+		case START:
+			insertStart(data);
+			break;
+		case END:
+			insertEnd(data);
+			break;
+		case ORDERED:
+			insertOrdered(data, key, order);
+			break;
+		case BEFORE:
+			insertBefore(data);
+			break;
+		case AFTER:
+		default:
+			insertAfter(data);
+			break;
+	}
 }
 
 template <typename T, typename K>
