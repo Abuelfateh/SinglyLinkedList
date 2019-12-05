@@ -249,7 +249,7 @@ void LinkedList<T, K>::insertBefore(const T &data, K key) {
 }
 
 template <typename T, typename K>
-void LinkedList<T, K>::insertOrdered(const T &data, const K key, int order) {
+void LinkedList<T, K>::insertOrdered(const T &data, const K key, LLByte order) {
 	// don't create a new node unless it is the first node,
 	// as we will let this on insertBefore
 	if (head == NULL) {
@@ -261,7 +261,7 @@ void LinkedList<T, K>::insertOrdered(const T &data, const K key, int order) {
 	}
 	else {
 		// set the cursor on the first greater element in the list
-		for (toStart(); hasData() && (order == LL_ASC ? (cur->key < key) : (cur->key > key)); advance());
+		for (toStart(); hasData() && (order == ASC ? (cur->key < key) : (cur->key > key)); advance());
 
 		// Another way to do the loop using while
 		//toStart();
@@ -296,10 +296,16 @@ void LinkedList<T, K>::reverse() {
 		// move the cursor to the start
 		toStart();
 		// set the cursor to the second node in the list
-		advance();
+		// here we don't use advance, as we will set the tail and manage it's next=NULL
+		tail = head;
+		prev = cur;
+		cur = cur->next;
+		prev->next = NULL;
 		// this condition will pass if there is more than two nodes in the list
 		// so, this loop will run at least twice if there is three nodes in the list
 		do {
+			// move the head to the right as we go
+			head = cur;
 			// catch the next node after the current position
 			tmp = cur->next;
 			// reverse the pointer to the previous node
@@ -308,32 +314,26 @@ void LinkedList<T, K>::reverse() {
 			prev = cur;
 			cur = tmp;
 		} while (cur != NULL);
-
-		// reverse the head and tail pointers
-		tmp = head;
-		head = tail;
-		tail = tmp;
-		tail->next = NULL;
 	}
 }
 
 template <typename T, typename K>
-void LinkedList<T, K>::copy(LinkedList<T, K> &list, K key, int fn, int order) {
+void LinkedList<T, K>::copy(LinkedList<T, K> &list, K key, int fn, LLByte order) {
 	if (cur != NULL) {
 		switch (fn) {
-			case LL_START:
+			case START:
 				list.insertStart(cur->data, NULL);
 				break;
-			case LL_END:
+			case END:
 				list.insertEnd(cur->data);
 				break;
-			case LL_AFTER:
+			case AFTER:
 				list.insertAfter(cur->data);
 				break;
-			case LL_BEFORE:
+			case BEFORE:
 				list.insertBefore(cur->data, NULL);
 				break;
-			case LL_ORDERED:
+			case ORDERED:
 				list.insertOrdered(cur->data, key, order);
 				break;
 		}
@@ -342,7 +342,7 @@ void LinkedList<T, K>::copy(LinkedList<T, K> &list, K key, int fn, int order) {
 }
 
 template <typename T, typename K>
-void LinkedList<T, K>::move(LinkedList<T, K> &list, K key, int fn, int order) {
+void LinkedList<T, K>::move(LinkedList<T, K> &list, K key, int fn, LLByte order) {
 	toKey(key);
 	if (cur != NULL) {
 		// first we copy current node data to the new list

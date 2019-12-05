@@ -42,12 +42,16 @@ int main() {
 
 		cout << endl;
 		// consider student id as the key
-		list.insertOrdered(stArray[i], stArray[i].id, LL_ASC);
+		list.insertOrdered(stArray[i], stArray[i].id, ASC);
 	}
 
 	// Clean the student array, as it now saved in the list
 	delete[] stArray;
 
+	printStudentList(list);
+
+	cout << endl << endl << "Reversed order:" << endl;
+	list.reverse();
 	printStudentList(list);
 
 	// testing copy
@@ -56,7 +60,7 @@ int main() {
 	system("cls");
 	// copy the first element
 	list.toStart();
-	list.copy(cmList, NULL, LL_ORDERED, LL_ASC);
+	list.copy(cmList, NULL, ORDERED, ASC);
 	cout << "Original List\n";
 	printStudentList(list);
 	cout << endl << "Second List\n";
@@ -68,7 +72,7 @@ int main() {
 	// move the second element
 	list.toStart();
 	list.advance();
-	list.move(cmList, NULL, LL_ORDERED, LL_ASC);
+	list.move(cmList, NULL, ORDERED, ASC);
 	cout << "Original List\n";
 	printStudentList(list);
 	cout << endl << "Second List\n";

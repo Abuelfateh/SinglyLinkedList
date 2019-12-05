@@ -2,17 +2,19 @@
 #define A_LINKEDLIST_H
 #include <iostream>
 
-// constants to select the required function in copy|move
-#define LL_START    0x01
-#define LL_END	    0x02
-#define LL_AFTER	  0x04
-#define LL_BEFORE	  0x08
-#define LL_ORDERED  0x10
-// to be used with insertOrdered
-#define LL_ASC			0x11
-#define LL_DESC			0x12
-
 namespace Abuelfateh {
+
+	// to select the required function in copy|move
+	// to be used with insertOrdered
+	typedef enum linkedListByte {
+		START			= 0x00,
+		END				= 0x01,
+		AFTER			= 0x02,
+		BEFORE		= 0x03,
+		ORDERED		= 0x04,
+		ASC				= 0x05,
+		DESC			= 0x06
+	} LLByte;
 
 	template <typename T, typename K>
 	class LinkedList {
@@ -32,7 +34,7 @@ namespace Abuelfateh {
 		void insertBefore(const T &data, K key = NULL);
 		// insert new node in ordered form
 		// generally in ascending order, or LL_DESC to insert in descending order (useful for Stack implementation)
-		void insertOrdered(const T &data, const K key, int order = LL_ASC);
+		void insertOrdered(const T &data, const K key, LLByte order = ASC);
 		// Short hand to insert after the current position, as it will be the most used case
 		void insert(const T &data);
 		// check if the list is empty return true
@@ -64,9 +66,9 @@ namespace Abuelfateh {
 		// Reverse the list values
 		void reverse();
 		// Copy current data in another LinkedList
-		void copy(LinkedList<T, K> &list, K key, int fn = LL_ORDERED, int order = LL_ASC);
+		void copy(LinkedList<T, K> &list, K key, int fn = LL_ORDERED, LLByte order = ASC);
 		// Move current data in another LinkedList
-		void move(LinkedList<T, K> &list, K key, int fn = LL_ORDERED, int order = LL_ASC);
+		void move(LinkedList<T, K> &list, K key, int fn = LL_ORDERED, LLByte order = ASC);
 	private:
 		struct Node {
 			K key;
