@@ -299,31 +299,21 @@ void LinkedList<T, K>::insert(const T &data, K key, LLByte order) {
 template <typename T, typename K>
 void LinkedList<T, K>::reverse() {
 	Node *tmp;
-	// swap the head and the tail
+	// if we have only two nodes, then swap head and tail pointers
 	if (length == 2) {
-		tmp = head;
-		head = tail;
-		tail = tmp;
+		tail = head;
+		head = tail->next;
 		head->next = tail;
 		tail->next = NULL;
-		// set the cursor to the first node
-		prev = NULL;
-		cur = head;
 	}
 	else if (length > 2) {
 		// move the cursor to the start
 		toStart();
 		// set the cursor to the second node in the list
-		// here we don't use advance, as we will set the tail and manage it's next=NULL
-		tail = head;
-		prev = cur;
-		cur = cur->next;
-		prev->next = NULL;
+		advance();
 		// this condition will pass if there is more than two nodes in the list
 		// so, this loop will run at least twice if there is three nodes in the list
 		do {
-			// move the head to the right as we go
-			head = cur;
 			// catch the next node after the current position
 			tmp = cur->next;
 			// reverse the pointer to the previous node
@@ -332,7 +322,14 @@ void LinkedList<T, K>::reverse() {
 			prev = cur;
 			cur = tmp;
 		} while (cur != NULL);
+		// reverse the tail pointer, and set the head to last non null pointer
+		tail = head;
+		head = prev;
+		// make sure the tail ends with null
+		tail->next = NULL;
 	}
+	// set the cursor position at the start of the list
+	toStart();
 }
 
 template <typename T, typename K>
