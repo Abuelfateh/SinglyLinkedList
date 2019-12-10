@@ -45,6 +45,8 @@ namespace Abuelfateh {
 		void remove();
 		// set the cursor to the first element
 		void toStart();
+		// set the cursor to the last element
+		void toEnd();
 		// advance the cursor forward by one element
 		void advance();
 		// advance the cursor backward by one element
@@ -57,6 +59,8 @@ namespace Abuelfateh {
 		void toKey(K key);
 		// get the data in the current cursor position
 		T * getData() const;
+		// overloaded to return the data in a buffer
+		bool getData(T &buffer);
 		// return the current key value
 		K getKey() const;
 		// get the length of the list

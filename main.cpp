@@ -23,7 +23,81 @@ void printStudentList(LinkedList<Student, int> &list) {
 	}
 }
 
+void reOrderList_EvenOdd(LinkedList<int, int> &list) {
+	int
+		// to hold the data
+		buffer, tmpBuffer,
+		// to loop on the list until it all sorted in the required order
+		i, len = list.getLength(),
+		// to keep the order of the list
+		oddPos = 0, tmpPos;
+	// to stop the outer loop when the list is sorted in the required order
+	bool listHasChanged = true;
+	// loop until the list is not sorted
+	for (i = 0; listHasChanged && i < len; i++) {
+		listHasChanged = false;
+
+		for (list.toStart(); list.hasData(); list.advance()) {
+			list.getData(buffer);
+			// chack for odd number, same as (buffer % 2 != 0) but faster
+			if (buffer & 1) {
+				// remove the current node from the list
+				list.remove();
+				// find the next odd number
+				for (list.toStart(), tmpPos = 0; list.hasData(); list.advance()) {
+					list.getData(tmpBuffer);
+					if (tmpBuffer & 1) {
+						// if the next odd is in position after the removed node
+						if (tmpPos == oddPos) {
+							listHasChanged = true;
+							break;
+						}
+						// keep track of the tmp position
+						tmpPos++;
+					}
+				}
+				// set the position to the next odd node
+				oddPos++;
+
+				// using insertEnd will keep the order of the odd numbers
+				list.insertEnd(buffer);
+			}
+		}
+	}
+}
+
 int main() {
+	// testing Even-Odd order function
+	LinkedList<int, int> ev_od_list;
+	int d;
+
+	ev_od_list.insertEnd(4);
+	ev_od_list.insertEnd(3);
+	ev_od_list.insertEnd(13);
+	ev_od_list.insertEnd(2);
+	ev_od_list.insertEnd(8);
+	ev_od_list.insertEnd(18);
+	ev_od_list.insertEnd(1);
+	ev_od_list.insertEnd(6);
+	ev_od_list.insertEnd(5);
+	ev_od_list.insertEnd(9);
+
+
+	cout << "Original List:" << endl;
+	for (ev_od_list.toStart(); ev_od_list.hasData(); ev_od_list.advance()) {
+		ev_od_list.getData(d);
+		cout << d << " ";
+	}
+	cout << endl << endl << "Oredered Even-Odd list:" << endl;
+	reOrderList_EvenOdd(ev_od_list);
+	for (ev_od_list.toStart(); ev_od_list.hasData(); ev_od_list.advance()) {
+		ev_od_list.getData(d);
+		cout << d << " ";
+	}
+	system("pause");
+	system("cls");
+
+
 	LinkedList<Student, int> list, cmList;
 
 	Student * stArray;

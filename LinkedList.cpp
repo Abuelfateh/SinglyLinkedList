@@ -40,6 +40,11 @@ void LinkedList<T, K>::toStart() {
 }
 
 template <typename T, typename K>
+void LinkedList<T, K>::toEnd() {
+	for (toStart(); hasData(); advance());
+}
+
+template <typename T, typename K>
 void LinkedList<T, K>::advance() {
 	// check if the cursor is at the end of the list
 	if (cur != NULL) {
@@ -98,6 +103,15 @@ T * LinkedList<T, K>::getData() const {
 }
 
 template <typename T, typename K>
+bool LinkedList<T, K>::getData(T &buffer) {
+	if (cur != NULL) {
+		buffer = cur->data;
+		return true;
+	}
+	return false;
+}
+
+template <typename T, typename K>
 K LinkedList<T, K>::getKey() const {
 	return cur == NULL ? tail->key : cur->key;
 }
@@ -116,11 +130,21 @@ template <typename T, typename K>
 void LinkedList<T, K>::remove() {
 	// make sure the cursor points to an element and not at the end of the list
 	if (cur != NULL) {
+		if (length == 1) {
+			clear();
+		}
 		// special case for cursor points to the head, so we asume that (cur = head);
-		if (prev == NULL) {
+		else if (prev == NULL) {
 			head = head->next;
 			delete cur;
 			cur = head;
+		}
+		// special case for cursor points to the tail
+		else if (cur->next == NULL) {
+			delete tail;
+			prev->next = NULL;
+			tail = prev;
+			toEnd();
 		}
 		else {
 			cur = cur->next;
